@@ -8,7 +8,14 @@
 module.exports = {
 
   attributes: {
-
+  	type: {
+  		type: 'string',
+  		required: true
+  	},
+  	obj: {
+  		type: 'json',
+  		required: true
+  	}
   }
 };
 

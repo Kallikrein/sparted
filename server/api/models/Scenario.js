@@ -8,7 +8,24 @@
 module.exports = {
 
   attributes: {
-
+  	type : {
+  		type: 'string',
+  		required: true
+  	},
+  	triggers: {
+  		type: 'array'
+  	},
+  	groups: {
+  		type: 'array'
+  	},
+  	vars: {
+  		type: 'json',
+  		required: true
+  	},
+  	contents: {
+  		type: 'array',
+  		required: true
+  	}
   }
 };
 
