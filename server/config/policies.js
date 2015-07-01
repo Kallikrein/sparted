@@ -26,7 +26,7 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  // '*': true,
+  '*': ['hasValidToken'],
 
   /***************************************************************************
   *                                                                          *
@@ -48,4 +48,11 @@ module.exports.policies = {
 		// before letting any users feed our rabbits
 		// feed : ['isNiceToAnimals', 'hasRabbitFood']
 	// }
+  'UserController': {
+    'create': true // We dont need authorization here, allowing public access
+  },
+
+  'AuthController': {
+    '*': true // We dont need authorization here, allowing public access
+  }
 };

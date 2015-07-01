@@ -22,10 +22,14 @@ module.exports.issue = function(payload) {
  
 // Verifies token on a request
 module.exports.verify = function(token, callback) {
-  return jwt.verify(
+
+  var test = jwt.verify(
     token, // The token to be verified
     tokenSecret, // Same token we used to sign
     {}, // No Option, for more see https://github.com/auth0/node-jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback
     callback //Pass errors or decoded token to callback
   );
+  console.log(token);
+  console.log(tokenSecret);
+  return test;
 };
