@@ -20,7 +20,7 @@ module.exports = {
   	lastName: {
   		type: 'string',
   		required: true
-  	}
+  	},
   	encryptedPassword: {
   		type: 'string',
   		required: true
