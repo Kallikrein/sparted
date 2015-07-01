@@ -21,6 +21,16 @@ module.exports = {
   		type: 'string',
   		required: true
   	}
+  	encryptedPassword: {
+  		type: 'string',
+  		required: true
+  	},
+  	toJSON: function () {
+      var obj = this.toObject();
+      delete obj.encryptedPassword;
+      return obj;
+    }
+
   }
 };
 
