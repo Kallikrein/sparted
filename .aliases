@@ -1,2 +1,2 @@
 alias drun='docker run -it --rm'
-alias lift='drun -v /home/thomas/sparted/server:/src -p 80:1337 kallikrein/sails-tools sails lift'
+alias lift='drun -v $PWD:/src -p 80:1337 kallikrein/sails-tools sails lift'
