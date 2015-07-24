@@ -1,26 +1,49 @@
-/**
-* User.js
-*
-* @description :: TODO: You might write a short summary of how this model works and what it represents here.
-* @docs        :: http://sailsjs.org/#!documentation/models
-*/
+var _ = require('lodash');
+var Promise = require("bluebird");
 
+/** @module User */
 module.exports = {
-
   attributes: {
-  	email: {
-  		type: 'email',
-  		required: true,
-  		unique: true
-  	},
-  	firstName: {
-  		type: 'string',
-  		required: true
-  	},
-  	lastName: {
-  		type: 'string',
-  		required: true
-  	}
+    username: {
+      type: 'string',
+      unique: true,
+      required: true
+    },
+    email: {
+      type: 'email',
+      unique: true,
+    },
+    passports: {
+      collection: 'Passport',
+      via: 'user'
+    }
+
+    toJSON: function () {
+      var user = this.toObject();
+      delete user.password;
+      user.gravatarUrl = this.getGravatarUrl();
+      return user;
+    }
+  },
+
+  beforeCreate: function (user, next) {
+    if (_.isEmpty(user.username)) {
+      user.username = user.email;
+    }
+    next();
+  },
+
+  /**
+   * Register a new User with a passport
+   */
+  register: function (user) {
+    return new Promise(function (resolve, reject) {
+      sails.services.passport.createLocal(user, function (error, created) {
+        if (error)
+          return reject(error);
+
+        resolve(created);
+      });
+    });
   }
 };
-
