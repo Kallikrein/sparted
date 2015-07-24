@@ -1,4 +1,5 @@
-var bcrypt = require('bcryptjs');
+var bcrypt = require('bcryptjs'),
+    Promise = require('bluebird');
 
 /**
  * Hash a passport password.
@@ -85,8 +86,17 @@ var Passport = {
      * @param {string}   password The password to validate
      * @param {Function} next
      */
-    validatePassword: function (password, next) {
-      bcrypt.compare(password, this.password, next);
+    validatePassword: function (password) {
+      var self = this;
+
+      return new Promise(function (resolve, reject) {
+        bcrypt.compare(password, self.password, function (err, res) {
+          if (err || res == false)
+            reject(err);
+          else
+            resolve(self);
+        });
+      });
     }
 
   },

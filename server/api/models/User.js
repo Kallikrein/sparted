@@ -16,12 +16,11 @@ module.exports = {
     passports: {
       collection: 'Passport',
       via: 'user'
-    }
+    },
 
     toJSON: function () {
       var user = this.toObject();
       delete user.password;
-      user.gravatarUrl = this.getGravatarUrl();
       return user;
     }
   },
@@ -31,6 +30,12 @@ module.exports = {
       user.username = user.email;
     }
     next();
+  },
+
+  afterCreate: function (user, next) {
+    sails.services.passport.attachJWT(user)
+    .then(next)
+    .catch(next)
   },
 
   /**

@@ -1,7 +1,9 @@
 'use strict';
 
 var passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy;
+    LocalStrategy = require('passport-local').Strategy,
+    JwtStrategy = require('passport-jwt').Strategy,
+    Promise = require('bluebird');
 
 /**
  * Load passport strategies
@@ -26,7 +28,7 @@ passport.loadStrategies = function () {
       function processUser(user) {
         // TODO : Promise.reject
         if (!user)
-          return done(null, false, { message: 'Incorrect username.' });
+          return Promise.reject('Incorrect username.');
         else
           return sails.models.passport.findOne({
             protocol: 'local',
@@ -36,16 +38,14 @@ passport.loadStrategies = function () {
 
       function processPassport(pass) {
         // TODO : Gérer le cas où passport n'est pas défini
-        return pass.validatePassword(passport);
+        return pass.validatePassword(password);
       }
 
       function processResponse(res) {
         // TODO : Le nom est-il adapté ?
         // TODO : Comment formater res ?
-        if (res.status === 'OK') {
-          // TODO : quoi retourner ?
-          return done(null, res.user, { message: 'Login successfull. '});
-        }
+        console.log(res);
+        return done(null, res.user, { message: 'Login successfull.'});
       }
 
       function errorHandler(err) {
@@ -53,6 +53,16 @@ passport.loadStrategies = function () {
       }
     }
   ));
+
+  passport.use(new JwtStrategy({
+      secretOrKey: sails.config.session.secret,
+      tokenBodyField: 'auth_token',
+      tokenQueryParameterName: 'auth_token'
+    },
+    function (jwt_payload, done) {
+      console.log(jwt_payload);
+    })
+  )
 
 }
 
@@ -67,13 +77,6 @@ passport.endpoint = function (req, res) {
   // this.authenticate(provider)
 }
 
-passport.loginLocal = function (req, res) {
-  this.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/coucou'
-  })
-}
-
 passport.createLocal = function (_user, next) {
   var password = _user.password;
   delete _user.password;
@@ -86,9 +89,11 @@ passport.createLocal = function (_user, next) {
     }
 
     sails.models.passport.create({
-      protocol : 'local'
-    , password : password
-    , user     : user.id
+      protocol   : 'local'
+    , password   : password
+    , user       : user.id
+    , identifier : user.username
+    , provider   : 'local'
     }, function (err, passport) {
       if (err) {
         return user.destroy(function (destroyErr) {

@@ -13,10 +13,11 @@ module.exports = {
    * `AuthController.login()`
    */
   login: function (req, res) {
-    return res.json({
-      todo: 'login() is not implemented yet!'
-    });
-    sails.services.passport.endpoint(req, res);
+    return sails.services.passport.authenticate('local', {
+      successRedirect: '/',
+      failureRedirect: '/coucou',
+      session: false
+    })(req, res, req.next);
   }
 };
 
