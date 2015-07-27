@@ -8,7 +8,14 @@
 module.exports = {
 
   attributes: {
-
+  	type: {
+  		type: 'string',
+  		defaultsTo: 'quiz'
+  	},
+  	obj: {
+  		type: 'json',
+  		required: true
+  	}
   }
 };
 

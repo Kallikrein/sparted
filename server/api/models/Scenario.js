@@ -8,7 +8,13 @@
 module.exports = {
 
   attributes: {
-
+  	type: {
+  		type: 'string',
+  		defaultsTo: 'daily serie'
+  	},
+  	content: {
+  		collection: 'content'
+  	}
   }
 };
 
