@@ -23,7 +23,7 @@ module.exports = {
 
   models: {
     connection : 'localDiskDb',
-    migrate : 'drop'
+    migrate : 'safe'
   },
   cors : {
   	allRoutes: true,
