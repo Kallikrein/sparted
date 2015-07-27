@@ -1,10 +1,10 @@
 module.exports = function (sails) {
   return {
-    initialize: initialize
+    // initialize: initialize
   };
 
-  function initialize (next) {
-    sails.services.passport.loadStrategies();
-    next();
-  }
+  // function initialize (next) {
+  //   sails.services.passport.loadStrategies();
+  //   next();
+  // }
 };

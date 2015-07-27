@@ -94,6 +94,12 @@ module.exports.connections = {
     user: process.env.MAINDB_ENV_DB_USER,
     password: process.env.MAINDB_ENV_DB_PASS,
     database: process.env.MAINDB_ENV_DB_NAME
+  },
+
+  tokenDB: {
+    adapter: 'sails-redis',
+    host: 'sessionDB',
+    port: 6379
   }
 
 };

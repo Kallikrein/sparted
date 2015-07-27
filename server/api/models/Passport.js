@@ -89,10 +89,21 @@ var Passport = {
     validatePassword: function (password) {
       var self = this;
 
+      if (!password)
+        Promise.reject({
+          message: 'password not defined'
+        })
+
       return new Promise(function (resolve, reject) {
         bcrypt.compare(password, self.password, function (err, res) {
-          if (err || res == false)
+          if (err)
             reject(err);
+          else if (!res)
+            reject({
+              status  : 400,
+              code    : 'E_WRONG_PASSWORD',
+              message : 'Wrong password'
+            });
           else
             resolve(self);
         });
