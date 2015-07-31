@@ -20,7 +20,13 @@ module.exports = {
   	lastName: {
   		type: 'string',
   		required: true
-  	}
+  	},
+    scenario: {
+      collection: 'scenario'
+    },
+    friend: {
+      collection: 'user'
+    }
   }
 };
 

@@ -1,5 +1,5 @@
 /**
-* Scenario.js
+* Map.js
 *
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
@@ -8,12 +8,15 @@
 module.exports = {
 
   attributes: {
-  	type: {
-  		type: 'string',
-  		defaultsTo: 'daily serie'
+  	login: {
+  		type: 'url'
   	},
-  	content: {
-  		collection: 'content'
+  	achievement: {
+  		type: 'url'
+  	},
+  	app: {
+  		type: 'json',
+  		model: 'app'
   	}
   }
 };
