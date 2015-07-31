@@ -17,18 +17,15 @@ module.exports = {
    * environment (see config/connections.js and config/models.js )           *
    ***************************************************************************/
 
-  // models: {
-  //   connection: 'someMongodbServer'
-  // }
+  models: {
+    connection: 'mainDB',
+    migrate: 'alter'
+  },
 
-  // models: {
-  //   connection : 'localDiskDb',
-  //   migrate : 'drop'
-  // },
-  // cors : {
-  // 	allRoutes: true,
-  // 	origin : '*',
-  // 	methods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD'
-  // }
+  cors : {
+  	allRoutes: true,
+  	origin : '*',
+  	methods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD'
+  }
 
 };

@@ -1,11 +1,11 @@
 web:
-  build: .
+  image: kallikrein/sails-tools:latest
   # restart: always
-  command: nodemon /usr/src/app/ -w /usr/src/app/api -w /usr/src/app/config -w /usr/src/app/assets
+  command: nodemon app.js
   ports:
-    - "1337:1337"
+    - "80:1337"
   volumes:
-    - .:/usr/src/app
+    - .:/src
   links:
     - postgresql:mainDB
     - redis:sessionDB
