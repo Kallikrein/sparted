@@ -12,29 +12,22 @@ var passport = require('passport');
  * @param {Object} info Info if some error occurs
  * @private
  */
-function _onPassportAuth(req, res, error, user, info) {
+function _auth(req, res, error, user, info) {
   if (error)
     return res.serverError(error);
-  if (!user)
+  if (!user) {
     return res.unauthorized(null, info && info.code, info && info.message);
+  }
 
-  Token.findOne({user: user.id})
-  .then(function (token) {
-    // TODO Gérer le cas où le token est vide
-      res.ok({
-        token: token.token,
-        user: user
-      })
-  })
-}
+  // console.log('Coucou', arguments);
+  console.log('Hello', user)
 
-function _onFacebookAuth(req, res, error, ret, info) {
-  if (error)
-    return res.serverError(error);
-  if (!ret)
-    return res.unauthorized(null, info && info.code, info && info.message);
-
-  return res.ok(ret);
+  return Token.findOne(user).then(function (token) {
+      return res.ok(token.token)
+    })
+    .catch(function (err) {
+      return res.serverError(err);
+    });
 }
 
 module.exports = {
@@ -44,9 +37,13 @@ module.exports = {
    * @param {Object} res Response object
    */
   signup: function (req, res) {
-    User.register(_.omit(req.allParams(), 'id'))
-    .then(res.created)
-    .catch(res.serverError);
+    if (req.param('provider') === 'local') {
+      User.register(_.omit(req.allParams(), 'id'))
+      .then(res.ok)
+      .catch(res.serverError);
+    } else if (req.param('provider') === 'facebook') {
+    } else
+      res.badRequest('provider missing');
   },
 
   /**
@@ -54,19 +51,13 @@ module.exports = {
    * @param {Object} req Request object
    * @param {Object} res Response object
    */
+  // TODO: Comment se comporte ce module si un login fb est fait sans que le user soit crée ?
+  // TODO: Peut-on se log avec un token ?
   signin: function (req, res) {
     if (req.param('provider') === 'local')
-      passport.authenticate(
-        'local',
-        {session: false},
-        _onPassportAuth.bind(this, req, res)
-      )(req, res);
+      passport.authenticate('local', {session: false}, _auth.bind(this, req, res))(req, res);
     else if (req.param('provider') === 'facebook')
-      passport.authenticate(
-        'facebook-token',
-        {session: false},
-        _onFacebookAuth.bind(this, req, res)
-      )(req, res);
+      passport.authenticate('facebook-token', {session: false}, _auth.bind(this, req, res))(req, res);
     else
       res.badRequest('provider missing');
   },

@@ -6,7 +6,7 @@
 */
 
 module.exports = {
-  connection: 'tokenDB',
+  // connection: 'tokenDB',
   attributes: {
     user: {
       model: 'user',

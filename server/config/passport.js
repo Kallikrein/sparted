@@ -44,7 +44,7 @@ function _onLocalStrategyAuth(username, password, next) {
   User.findOne({ username: username })
   .then(processUser)
   .then(processPassport)
-  .then(processResponse)
+  .then(processToken)
   .catch(errorHandler);
 
 
@@ -66,8 +66,8 @@ function _onLocalStrategyAuth(username, password, next) {
     return pass.validatePassword(password);
   }
 
-  function processResponse (res) {
-    return next(null, res.user, { message: 'Login successfull.'});
+  function processToken (res) {
+    return next(null, res.user.id, {});
   }
 
   function errorHandler (err) {
@@ -90,36 +90,34 @@ function _onJwtStrategyAuth(payload, next) {
  * Triggers when user authenticates via Facebook Token strategy
  */
 function _onFacebookStrategyAuth(accessToken, refreshToken, profile, next) {
-  var self = this
-  self.user = {};
-
-  User.findOrCreate({ username: profile.id })
+  User.findOne({ username: profile.id })
   .then(function (user) {
-    self.user = user
-    return Passport.create({
-      protocol   : 'facebook',
-      user       : user.id,
-      identifier : user.username,
-      provider   : 'facebook'
-    })
-    .then(function (passport) {
-      return Token.create({
-        user: passport.user,
-        token: sails.services.passport.createToken(passport.user)
-      });
-    })
-    .then(function (token) {
-      var res = {
-        token: token.token,
-        user: self.user
-      }
-      return next(null, res, {});
-    })
-    .catch(function (err) {
-      return next(err, false, {});
-    })
+    if (!user) {
+      User.create({ username: profile.id })
+      .then(function (created) {
+        return Passport.create({
+          protocol   : 'facebook',
+          user       : created.id,
+          identifier : created.username,
+          provider   : 'facebook'
+        })
+      })
+      .then(function (passport) {
+        return Token.create({
+          user  : passport.user,
+          token : sails.services.passport.createToken(passport.user)
+        });
+      })
+      .then(function (token) {
+        return next(null, token.user, {});
+      })
+      .catch(function (err) {
+        return next(err, false, {});
+      })
+    } else {
+      next(null, user.id, {})
+    }
   })
-
 }
 
 passport.use(new LocalStrategy(LOCAL_STRATEGY_CONFIG, _onLocalStrategyAuth));

@@ -42,6 +42,7 @@ module.exports = {
   register: function (user) {
     var password = user.password;
     delete user.password;
+    delete user.provider;
 
     if (!password)
       return Promise.reject('password missing');
@@ -55,6 +56,30 @@ module.exports = {
           identifier : user.username,
           provider   : 'local'
         })
+    })
+    .then(function (passport) {
+      return Token.create({
+        user: passport.user,
+        token: sails.services.passport.createToken(passport.user)
+      });
+    })
+    .then(function (token) {
+      return Promise.resolve(token.token);
+    })
+  },
+
+  registerFb: function (user) {
+    if (!user)
+      return Promise.reject('access_token missing');
+
+    return User.create({ username: user })
+    .then(function (user) {
+      return Passport.create({
+        protocol   : 'facebook',
+        user       : user.id,
+        identifier : user.username,
+        provider   : 'facebook'
+      })
     })
     .then(function (passport) {
       return Token.create({
