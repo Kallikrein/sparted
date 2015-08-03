@@ -41,7 +41,6 @@ module.exports = {
       User.register(_.omit(req.allParams(), 'id'))
       .then(res.ok)
       .catch(res.serverError);
-    } else if (req.param('provider') === 'facebook') {
     } else
       res.badRequest('provider missing');
   },
