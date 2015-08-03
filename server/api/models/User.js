@@ -25,7 +25,7 @@ module.exports = {
     username: {
       type: 'string',
       unique: true,
-      required: true,
+      //required: true,
       alphanumericdashed: true
     },
     // passports: {
