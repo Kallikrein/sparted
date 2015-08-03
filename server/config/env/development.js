@@ -26,6 +26,26 @@ module.exports = {
   	allRoutes: true,
   	origin : '*',
   	methods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD'
+  },
+
+  session : {
+     adapter: 'redis',
+
+  /***************************************************************************
+  *                                                                          *
+  * The following values are optional, if no options are set a redis         *
+  * instance running on localhost is expected. Read more about options at:   *
+  * https://github.com/visionmedia/connect-redis                             *
+  *                                                                          *
+  *                                                                          *
+  ***************************************************************************/
+
+  host: 'sessionDB',
+  port: 6379,
+  // ttl: <redis session TTL in seconds>,
+  // db: 0,
+  // pass: <redis auth password>,
+  prefix: 'sess:'
   }
 
 };
